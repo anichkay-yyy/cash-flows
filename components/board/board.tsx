@@ -37,8 +37,8 @@ const nodeTypes = { cashNode: CustomNode };
 const edgeTypes = { cashEdge: CustomEdge };
 
 function BoardInner() {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<RFNode>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<RFEdge>([]);
   const { getViewport } = useReactFlow();
 
   // Node dialog state
