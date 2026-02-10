@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -139,6 +140,11 @@ export default function Home() {
             <DialogTitle>
               {dialogMode === "create" ? "New board" : "Rename board"}
             </DialogTitle>
+            <DialogDescription>
+              {dialogMode === "create"
+                ? "Create a new board to organize your flows"
+                : "Change the name of this board"}
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Input

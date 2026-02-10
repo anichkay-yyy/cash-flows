@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -63,6 +64,11 @@ export function FlowDialog({
           <DialogTitle>
             {mode === "create" ? "New Flow" : "Edit Flow"}
           </DialogTitle>
+          <DialogDescription>
+            {mode === "create"
+              ? "Create a new flow with label, constancy and share settings"
+              : "Edit the flow settings"}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -62,6 +63,11 @@ export function NodeDialog({
           <DialogTitle>
             {mode === "create" ? "New Node" : "Edit Node"}
           </DialogTitle>
+          <DialogDescription>
+            {mode === "create"
+              ? "Create a new node with a name and type"
+              : "Edit the node settings"}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
