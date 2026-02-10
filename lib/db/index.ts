@@ -7,6 +7,16 @@ const sqlite = new Database(dbPath);
 sqlite.pragma("journal_mode = WAL");
 sqlite.pragma("foreign_keys = ON");
 
+// Check if existing tables have correct schema; recreate if mismatched
+const tableInfo = sqlite.pragma("table_info(nodes)") as { name: string }[];
+if (tableInfo.length > 0 && !tableInfo.some((col) => col.name === "board_id")) {
+  sqlite.exec(`
+    DROP TABLE IF EXISTS flows;
+    DROP TABLE IF EXISTS nodes;
+    DROP TABLE IF EXISTS boards;
+  `);
+}
+
 sqlite.exec(`
   CREATE TABLE IF NOT EXISTS boards (
     id TEXT PRIMARY KEY NOT NULL,
