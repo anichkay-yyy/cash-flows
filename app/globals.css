@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: #000000;
+  --color-foreground: #fafafa;
+  --color-card: #0C0F16;
+  --color-card-foreground: #fafafa;
+  --color-popover: #0C0F16;
+  --color-popover-foreground: #fafafa;
+  --color-primary: #284CAC;
+  --color-primary-foreground: #fafafa;
+  --color-secondary: #1a1a2e;
+  --color-secondary-foreground: #fafafa;
+  --color-muted: #1a1a2e;
+  --color-muted-foreground: #a1a1aa;
+  --color-accent: #284CAC;
+  --color-accent-foreground: #fafafa;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #fafafa;
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-ring: #284CAC;
+  --radius: 0.5rem;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+/* React Flow overrides */
+.react-flow__background {
+  background-color: #000000 !important;
+}
+
+.react-flow__minimap {
+  background-color: #0C0F16 !important;
+}
+
+.react-flow__controls button {
+  background-color: #0C0F16 !important;
+  color: #fafafa !important;
+  border-color: #27272a !important;
+}
+
+.react-flow__controls button:hover {
+  background-color: #1a1a2e !important;
+}
+
+.react-flow__attribution {
+  display: none !important;
+}
