@@ -3,8 +3,8 @@ FROM node:22-alpine AS base
 # --- Dependencies ---
 FROM base AS deps
 WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm ci || npm install
+COPY package.json package-lock.json ./
+RUN npm ci
 
 # --- Build ---
 FROM base AS builder
