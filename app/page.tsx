@@ -29,7 +29,7 @@ export default function Home() {
   const [boardName, setBoardName] = useState("");
 
   useEffect(() => {
-    getBoards().then(setBoards);
+    getBoards().then(setBoards).catch(console.error);
   }, []);
 
   const handleCreate = () => {

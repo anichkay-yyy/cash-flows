@@ -2,6 +2,7 @@ FROM node:22-alpine AS base
 
 # --- Dependencies ---
 FROM base AS deps
+RUN apk add --no-cache python3 make g++
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -26,8 +27,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
 COPY --from=builder /app/node_modules/bindings ./node_modules/bindings
-COPY --from=builder /app/node_modules/prebuild-install ./node_modules/prebuild-install
 COPY --from=builder /app/node_modules/file-uri-to-path ./node_modules/file-uri-to-path
+COPY --from=builder /app/drizzle ./drizzle
 
 RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
 
