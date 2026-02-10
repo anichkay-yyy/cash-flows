@@ -5,11 +5,26 @@ import * as schema from "./schema";
 const dbPath = process.env.DB_PATH || "cash-flows.db";
 const sqlite = new Database(dbPath);
 sqlite.pragma("journal_mode = WAL");
-sqlite.pragma("foreign_keys = ON");
 
-// Check if existing tables have correct schema; recreate if mismatched
+// Disable FK checks during migration to avoid issues with DROP
+sqlite.pragma("foreign_keys = OFF");
+
+// Check if existing tables have correct schema or broken FK integrity; recreate if needed
+let needsRecreate = false;
+
 const tableInfo = sqlite.pragma("table_info(nodes)") as { name: string }[];
 if (tableInfo.length > 0 && !tableInfo.some((col) => col.name === "board_id")) {
+  needsRecreate = true;
+}
+
+if (!needsRecreate && tableInfo.length > 0) {
+  const fkErrors = sqlite.pragma("foreign_key_check") as unknown[];
+  if (fkErrors.length > 0) {
+    needsRecreate = true;
+  }
+}
+
+if (needsRecreate) {
   sqlite.exec(`
     DROP TABLE IF EXISTS flows;
     DROP TABLE IF EXISTS nodes;
@@ -43,5 +58,8 @@ sqlite.exec(`
     created_at INTEGER NOT NULL DEFAULT (unixepoch())
   );
 `);
+
+// Enable FK checks after migration
+sqlite.pragma("foreign_keys = ON");
 
 export const db = drizzle(sqlite, { schema });
