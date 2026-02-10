@@ -55,3 +55,13 @@ body {
 .react-flow__attribution {
   display: none !important;
 }
+
+/* Flow edge animation */
+@keyframes flowAnimation {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

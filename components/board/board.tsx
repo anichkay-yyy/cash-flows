@@ -36,7 +36,7 @@ import { createFlow, updateFlow, deleteFlow } from "@/lib/actions/flows";
 const nodeTypes = { cashNode: CustomNode };
 const edgeTypes = { cashEdge: CustomEdge };
 
-function BoardInner() {
+function BoardInner({ boardId }: { boardId: string }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<RFNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<RFEdge>([]);
   const { getViewport } = useReactFlow();
@@ -61,14 +61,14 @@ function BoardInner() {
   const [flowInitialData, setFlowInitialData] = useState<{
     label: string;
     constancy: number;
-    quantity: number;
+    share: number;
   } | undefined>();
   const pendingConnection = useRef<Connection | null>(null);
 
   // Load data
   useEffect(() => {
     async function load() {
-      const [dbNodes, dbFlows] = await Promise.all([getNodes(), getFlows()]);
+      const [dbNodes, dbFlows] = await Promise.all([getNodes(boardId), getFlows(boardId)]);
 
       const rfNodes: RFNode[] = dbNodes.map((n) => ({
         id: n.id,
@@ -85,7 +85,7 @@ function BoardInner() {
         data: {
           label: f.label,
           constancy: f.constancy,
-          quantity: f.quantity,
+          share: f.share,
           onDoubleClick: handleEdgeDoubleClick,
         },
       }));
@@ -95,7 +95,7 @@ function BoardInner() {
     }
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [boardId]);
 
   // Update edge callbacks when edges change
   useEffect(() => {
@@ -116,8 +116,8 @@ function BoardInner() {
       setFlowDialogMode("edit");
       setFlowInitialData({
         label: (edge.data as { label?: string })?.label ?? "",
-        constancy: (edge.data as { constancy?: number })?.constancy ?? 0.5,
-        quantity: (edge.data as { quantity?: number })?.quantity ?? 1,
+        constancy: (edge.data as { constancy?: number })?.constancy ?? 50,
+        share: (edge.data as { share?: number })?.share ?? 100,
       });
       setFlowDialogOpen(true);
     },
@@ -140,6 +140,7 @@ function BoardInner() {
         const y = (-viewport.y + window.innerHeight / 2) / viewport.zoom;
 
         const newNode = await createNode({
+          boardId,
           name: data.name,
           type: data.type,
           positionX: x,
@@ -169,7 +170,7 @@ function BoardInner() {
         }
       }
     },
-    [nodeDialogMode, editingNodeId, getViewport, setNodes]
+    [nodeDialogMode, editingNodeId, getViewport, setNodes, boardId]
   );
 
   const handleNodeDelete = useCallback(async () => {
@@ -215,15 +216,16 @@ function BoardInner() {
   }, []);
 
   const handleFlowSubmit = useCallback(
-    async (data: { label: string; constancy: number; quantity: number }) => {
+    async (data: { label: string; constancy: number; share: number }) => {
       if (flowDialogMode === "create" && pendingConnection.current) {
         const conn = pendingConnection.current;
         const newFlow = await createFlow({
+          boardId,
           sourceNodeId: conn.source,
           targetNodeId: conn.target,
           label: data.label,
           constancy: data.constancy,
-          quantity: data.quantity,
+          share: data.share,
         });
         if (newFlow) {
           const newEdge: RFEdge = {
@@ -234,7 +236,7 @@ function BoardInner() {
             data: {
               label: newFlow.label,
               constancy: newFlow.constancy,
-              quantity: newFlow.quantity,
+              share: newFlow.share,
               onDoubleClick: handleEdgeDoubleClick,
             },
           };
@@ -252,7 +254,7 @@ function BoardInner() {
                     data: {
                       label: updated.label,
                       constancy: updated.constancy,
-                      quantity: updated.quantity,
+                      share: updated.share,
                       onDoubleClick: handleEdgeDoubleClick,
                     },
                   }
@@ -262,7 +264,7 @@ function BoardInner() {
         }
       }
     },
-    [flowDialogMode, editingFlowId, handleEdgeDoubleClick, setEdges]
+    [flowDialogMode, editingFlowId, handleEdgeDoubleClick, setEdges, boardId]
   );
 
   const handleFlowDelete = useCallback(async () => {
@@ -316,10 +318,10 @@ function BoardInner() {
   );
 }
 
-export default function Board() {
+export default function Board({ boardId }: { boardId: string }) {
   return (
     <ReactFlowProvider>
-      <BoardInner />
+      <BoardInner boardId={boardId} />
     </ReactFlowProvider>
   );
 }

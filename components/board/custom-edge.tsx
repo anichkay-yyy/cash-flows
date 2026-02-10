@@ -2,7 +2,6 @@
 
 import { memo } from "react";
 import {
-  BaseEdge,
   EdgeLabelRenderer,
   getBezierPath,
   type EdgeProps,
@@ -11,7 +10,7 @@ import {
 export type CashEdgeData = {
   label?: string;
   constancy?: number;
-  quantity?: number;
+  share?: number;
   onDoubleClick?: (id: string) => void;
 };
 
@@ -24,7 +23,6 @@ function CustomEdge({
   sourcePosition,
   targetPosition,
   data,
-  style,
 }: EdgeProps) {
   const edgeData = data as unknown as CashEdgeData;
   const [edgePath, labelX, labelY] = getBezierPath({
@@ -36,20 +34,46 @@ function CustomEdge({
     targetPosition,
   });
 
-  const constancy = edgeData?.constancy ?? 0.5;
-  const quantity = edgeData?.quantity ?? 1;
+  const constancy = edgeData?.constancy ?? 50;
+  const share = edgeData?.share ?? 100;
   const label = edgeData?.label;
+
+  // Animation speed: higher constancy = faster (lower duration)
+  // constancy 0 -> 4s, constancy 100 -> 0.3s
+  const animDuration = 4 - (constancy / 100) * 3.7;
+
+  // strokeWidth based on share percentage: 1 at 0%, 4 at 100%
+  const strokeWidth = 1 + (share / 100) * 3;
+
+  const markerId = `arrow-${id}`;
 
   return (
     <>
-      <BaseEdge
+      <defs>
+        <marker
+          id={markerId}
+          markerWidth="12"
+          markerHeight="12"
+          refX="10"
+          refY="6"
+          orient="auto"
+          markerUnits="userSpaceOnUse"
+        >
+          <path d="M2,2 L10,6 L2,10" fill="none" stroke="#284CAC" strokeWidth="1.5" />
+        </marker>
+      </defs>
+      <path
         id={id}
-        path={edgePath}
+        className="react-flow__edge-path"
+        d={edgePath}
         style={{
-          ...style,
           stroke: "#284CAC",
-          strokeWidth: Math.max(1, quantity * 2),
-          opacity: 0.4 + constancy * 0.6,
+          strokeWidth,
+          opacity: 0.4 + (constancy / 100) * 0.6,
+          fill: "none",
+          strokeDasharray: "8 4",
+          animation: `flowAnimation ${animDuration}s linear infinite`,
+          markerEnd: `url(#${markerId})`,
         }}
       />
       <EdgeLabelRenderer>
@@ -63,7 +87,7 @@ function CustomEdge({
           <div className="bg-card border border-border rounded px-2 py-1 text-xs text-foreground">
             {label && <div className="font-medium">{label}</div>}
             <div className="text-muted-foreground">
-              c:{constancy.toFixed(1)} q:{quantity.toFixed(1)}
+              c:{constancy}% s:{share}%
             </div>
           </div>
         </div>

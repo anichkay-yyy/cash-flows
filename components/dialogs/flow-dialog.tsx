@@ -19,10 +19,10 @@ interface FlowDialogProps {
   onSubmit: (data: {
     label: string;
     constancy: number;
-    quantity: number;
+    share: number;
   }) => void;
   onDelete?: () => void;
-  initialData?: { label: string; constancy: number; quantity: number };
+  initialData?: { label: string; constancy: number; share: number };
   mode: "create" | "edit";
 }
 
@@ -35,16 +35,14 @@ export function FlowDialog({
   mode,
 }: FlowDialogProps) {
   const [label, setLabel] = useState(initialData?.label ?? "");
-  const [constancy, setConstancy] = useState(initialData?.constancy ?? 0.5);
-  const [quantity, setQuantity] = useState(
-    String(initialData?.quantity ?? 1)
-  );
+  const [constancy, setConstancy] = useState(initialData?.constancy ?? 50);
+  const [share, setShare] = useState(initialData?.share ?? 100);
 
   useEffect(() => {
     if (open) {
       setLabel(initialData?.label ?? "");
-      setConstancy(initialData?.constancy ?? 0.5);
-      setQuantity(String(initialData?.quantity ?? 1));
+      setConstancy(initialData?.constancy ?? 50);
+      setShare(initialData?.share ?? 100);
     }
   }, [open, initialData]);
 
@@ -53,7 +51,7 @@ export function FlowDialog({
     onSubmit({
       label,
       constancy,
-      quantity: parseFloat(quantity) || 1,
+      share,
     });
     onOpenChange(false);
   };
@@ -79,26 +77,25 @@ export function FlowDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label>Constancy: {constancy.toFixed(2)}</Label>
+            <Label>Constancy: {constancy}%</Label>
             <Slider
               value={[constancy]}
               onValueChange={([v]) => setConstancy(v)}
               min={0}
-              max={1}
-              step={0.01}
+              max={100}
+              step={1}
               className="py-2"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="quantity">Quantity</Label>
-            <Input
-              id="quantity"
-              type="number"
-              step="0.1"
-              min="0"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="bg-background border-border"
+            <Label>Share: {share}%</Label>
+            <Slider
+              value={[share]}
+              onValueChange={([v]) => setShare(v)}
+              min={0}
+              max={100}
+              step={1}
+              className="py-2"
             />
           </div>
           <DialogFooter className="gap-2">

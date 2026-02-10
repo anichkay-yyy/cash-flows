@@ -8,8 +8,14 @@ sqlite.pragma("journal_mode = WAL");
 sqlite.pragma("foreign_keys = ON");
 
 sqlite.exec(`
+  CREATE TABLE IF NOT EXISTS boards (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    created_at INTEGER NOT NULL DEFAULT (unixepoch())
+  );
   CREATE TABLE IF NOT EXISTS nodes (
     id TEXT PRIMARY KEY NOT NULL,
+    board_id TEXT NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     type TEXT NOT NULL,
     position_x REAL DEFAULT 0 NOT NULL,
@@ -18,10 +24,11 @@ sqlite.exec(`
   );
   CREATE TABLE IF NOT EXISTS flows (
     id TEXT PRIMARY KEY NOT NULL,
+    board_id TEXT NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
     source_node_id TEXT NOT NULL REFERENCES nodes(id) ON DELETE CASCADE,
     target_node_id TEXT NOT NULL REFERENCES nodes(id) ON DELETE CASCADE,
-    constancy REAL DEFAULT 0.5 NOT NULL,
-    quantity REAL DEFAULT 1 NOT NULL,
+    constancy REAL DEFAULT 50 NOT NULL,
+    share REAL DEFAULT 100 NOT NULL,
     label TEXT DEFAULT '',
     created_at INTEGER NOT NULL DEFAULT (unixepoch())
   );

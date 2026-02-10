@@ -5,11 +5,12 @@ import { nodes } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
-export async function getNodes() {
-  return db.select().from(nodes).all();
+export async function getNodes(boardId: string) {
+  return db.select().from(nodes).where(eq(nodes.boardId, boardId)).all();
 }
 
 export async function createNode(data: {
+  boardId: string;
   name: string;
   type: "source" | "consumer" | "both";
   positionX: number;
@@ -18,6 +19,7 @@ export async function createNode(data: {
   const id = uuidv4();
   await db.insert(nodes).values({
     id,
+    boardId: data.boardId,
     name: data.name,
     type: data.type,
     positionX: data.positionX,

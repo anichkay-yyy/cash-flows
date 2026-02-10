@@ -5,6 +5,8 @@ services:
       - "33006:3000"
     environment:
       - DB_PATH=/app/data/cash-flows.db
+      - AUTH_LOGIN=admin
+      - AUTH_PASSWORD=changeme
     volumes:
       - app-data:/app/data
     restart: unless-stopped
