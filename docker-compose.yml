@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "33006:3000"
+    environment:
+      - DB_PATH=/app/data/cash-flows.db
+    volumes:
+      - app-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  app-data:
