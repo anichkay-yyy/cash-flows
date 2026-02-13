@@ -49,7 +49,10 @@ export async function updateNode(
   id: string,
   data: { name?: string; type?: UINodeType }
 ) {
-  const dbData = data.type ? { ...data, type: toDbType(data.type) } : data;
+  const dbData: { name?: string; type?: DBNodeType } = {
+    ...data,
+    type: data.type ? toDbType(data.type) : undefined,
+  };
   await db.update(nodes).set(dbData).where(eq(nodes.id, id));
   const row = await db.select().from(nodes).where(eq(nodes.id, id)).get();
   return row ? mapNodeType(row) : undefined;
