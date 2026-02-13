@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -17,6 +17,7 @@ import {
   createBoard,
   updateBoard,
   deleteBoard,
+  copyBoard,
 } from "@/lib/actions/boards";
 import type { Board } from "@/lib/db/schema";
 
@@ -44,6 +45,13 @@ export default function Home() {
     setEditingBoardId(board.id);
     setBoardName(board.name);
     setDialogOpen(true);
+  };
+
+  const handleCopy = async (id: string) => {
+    const copied = await copyBoard(id);
+    if (copied) {
+      setBoards((b) => [...b, copied]);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -115,6 +123,17 @@ export default function Home() {
                     }}
                   >
                     <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopy(board.id);
+                    }}
+                  >
+                    <Copy className="h-3.5 w-3.5" />
                   </Button>
                   <Button
                     size="icon"
