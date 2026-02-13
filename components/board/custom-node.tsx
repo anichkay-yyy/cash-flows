@@ -5,19 +5,19 @@ import { Handle, Position, type NodeProps } from "@xyflow/react";
 
 export type CashNodeData = {
   label: string;
-  nodeType: "source" | "consumer" | "both";
+  nodeType: "source" | "consumer" | "middleware";
 };
 
 const typeColors: Record<string, { bg: string; border: string }> = {
   source: { bg: "bg-[#284CAC]/20", border: "border-[#284CAC]" },
   consumer: { bg: "bg-red-900/20", border: "border-red-700" },
-  both: { bg: "bg-purple-900/20", border: "border-purple-600" },
+  middleware: { bg: "bg-purple-900/20", border: "border-purple-600" },
 };
 
 const typeLabels: Record<string, string> = {
   source: "Source",
   consumer: "Consumer",
-  both: "Both",
+  middleware: "Middleware",
 };
 
 function CustomNode({ data }: NodeProps) {
@@ -28,7 +28,7 @@ function CustomNode({ data }: NodeProps) {
     <div
       className={`px-4 py-3 rounded-lg border-2 ${colors.border} ${colors.bg} backdrop-blur-sm min-w-[120px] cursor-grab active:cursor-grabbing`}
     >
-      {(nodeData.nodeType === "consumer" || nodeData.nodeType === "both") && (
+      {(nodeData.nodeType === "consumer" || nodeData.nodeType === "middleware") && (
         <Handle
           type="target"
           position={Position.Left}
@@ -43,7 +43,7 @@ function CustomNode({ data }: NodeProps) {
           {typeLabels[nodeData.nodeType]}
         </div>
       </div>
-      {(nodeData.nodeType === "source" || nodeData.nodeType === "both") && (
+      {(nodeData.nodeType === "source" || nodeData.nodeType === "middleware") && (
         <Handle
           type="source"
           position={Position.Right}

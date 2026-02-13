@@ -62,6 +62,16 @@ function CustomEdge({
           <path d="M2,2 L10,6 L2,10" fill="none" stroke="#284CAC" strokeWidth="1.5" />
         </marker>
       </defs>
+      {/* Invisible wider path for easier clicking */}
+      <path
+        d={edgePath}
+        style={{
+          strokeWidth: 20,
+          fill: "none",
+          stroke: "transparent",
+          pointerEvents: "stroke",
+        }}
+      />
       <path
         id={id}
         className="react-flow__edge-path"
@@ -74,6 +84,7 @@ function CustomEdge({
           strokeDasharray: "8 4",
           animation: `flowAnimation ${animDuration}s linear infinite`,
           markerEnd: `url(#${markerId})`,
+          pointerEvents: "stroke",
         }}
       />
       <EdgeLabelRenderer>

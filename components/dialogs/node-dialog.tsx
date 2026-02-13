@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type NodeType = "source" | "consumer" | "both";
+type NodeType = "source" | "consumer" | "middleware";
 
 interface NodeDialogProps {
   open: boolean;
@@ -90,7 +90,7 @@ export function NodeDialog({
               <SelectContent className="bg-card border-border">
                 <SelectItem value="source">Source</SelectItem>
                 <SelectItem value="consumer">Consumer</SelectItem>
-                <SelectItem value="both">Both</SelectItem>
+                <SelectItem value="middleware">Middleware</SelectItem>
               </SelectContent>
             </Select>
           </div>

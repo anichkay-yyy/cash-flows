@@ -49,7 +49,7 @@ function BoardInner({ boardId }: { boardId: string }) {
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [nodeInitialData, setNodeInitialData] = useState<{
     name: string;
-    type: "source" | "consumer" | "both";
+    type: "source" | "consumer" | "middleware";
   } | undefined>();
 
   // Flow dialog state
@@ -133,7 +133,7 @@ function BoardInner({ boardId }: { boardId: string }) {
   }, []);
 
   const handleNodeSubmit = useCallback(
-    async (data: { name: string; type: "source" | "consumer" | "both" }) => {
+    async (data: { name: string; type: "source" | "consumer" | "middleware" }) => {
       if (nodeDialogMode === "create") {
         const viewport = getViewport();
         const x = (-viewport.x + window.innerWidth / 2) / viewport.zoom;
@@ -191,7 +191,7 @@ function BoardInner({ boardId }: { boardId: string }) {
       setNodeDialogMode("edit");
       setNodeInitialData({
         name: (node.data as { label: string }).label,
-        type: (node.data as { nodeType: "source" | "consumer" | "both" }).nodeType,
+        type: (node.data as { nodeType: "source" | "consumer" | "middleware" }).nodeType,
       });
       setNodeDialogOpen(true);
     },
@@ -282,6 +282,7 @@ function BoardInner({ boardId }: { boardId: string }) {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeDoubleClick={onNodeDoubleClick}
+        onEdgeDoubleClick={(_, edge) => handleEdgeDoubleClick(edge.id)}
         onNodeDragStop={onNodeDragStop}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
